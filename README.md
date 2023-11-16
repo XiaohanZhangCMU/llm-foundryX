@@ -1,19 +1,4 @@
 
-<p align="center">
-    <a href="https://pypi.org/project/llm-foundry/">
-        <img alt="PyPi Version" src="https://img.shields.io/pypi/pyversions/llm-foundry">
-    </a>
-    <a href="https://pypi.org/project/llm-foundry/">
-        <img alt="PyPi Package Version" src="https://img.shields.io/pypi/v/llm-foundry">
-    </a>
-    <a href="https://mosaicml.me/slack">
-        <img alt="Chat @ Slack" src="https://img.shields.io/badge/slack-chat-2eb67d.svg?logo=slack">
-    </a>
-    <a href="https://github.com/mosaicml/llm-foundry/blob/main/LICENSE">
-        <img alt="License" src="https://img.shields.io/badge/License-Apache%202.0-green.svg">
-    </a>
-</p>
-<br />
 
 # LLM Foundry
 
