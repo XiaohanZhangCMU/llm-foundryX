@@ -113,9 +113,9 @@ parameters:
   save_num_checkpoints_to_keep: 1
 integrations:
 - integration_type: git_repo
-  git_repo: mosaicml/llm-foundry
+  git_repo: xiaohanzhangcmu/llm-foundryX
   ssh_clone: false
-  git_branch: main
+  git_branch: cpu_offload
   pip_install: .[gpu-flash2,databricks]
 - integration_type: mlflow
   experiment_name: /Users/irene.dea@databricks.com/ift-mpt-7b
@@ -123,7 +123,7 @@ metadata:
   llmFoundryDependency: e40689f434a5bfa1ef5c261483fb77819324e0b9
 command:
   pip install awscli &&
-  cd llm-foundry && 
+  cd llm-foundryX && 
   python setup.py bdist_wheel && 
   databricks fs cp --overwrite ./dist/llm_foundry-0.3.0-py3-none-any.whl  dbfs:/xiaohan-test/ && 
   cd bundles/ft_preprocess && 

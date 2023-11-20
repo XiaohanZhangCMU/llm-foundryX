@@ -134,10 +134,10 @@ if examples_removed > 0:
 
 # COMMAND ----------
 
-print(f'task_output = {task_output}')
-dbutils.jobs.taskValues.set(key = "task_output", value = task_output)
-dbutils.jobs.taskValues.set(key = "root", value = root)
+#print(f'task_output = {task_output}')
+#dbutils.jobs.taskValues.set(key = "task_output", value = task_output)
+#dbutils.jobs.taskValues.set(key = "root", value = root)
 
 # COMMAND ----------
 
-!ls {task_output} | wc -l
+#!ls {task_output} | wc -l
