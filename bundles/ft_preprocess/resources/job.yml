@@ -1,0 +1,40 @@
+resources:
+  jobs:
+    dev_xiaohan_zhang_ft_preprocess:
+      name: ft_preprocess_1030
+      email_notifications:
+        on_start:
+          - xiaohan.zhang@databricks.com
+        on_success:
+          - xiaohan.zhang@databricks.com
+        on_failure:
+          - xiaohan.zhang@databricks.com
+        on_duration_warning_threshold_exceeded:
+          - xiaohan.zhang@databricks.com
+      timeout_seconds: 10800
+      health:
+        rules:
+          - metric: RUN_DURATION_SECONDS
+            op: GREATER_THAN
+            value: 7200
+      schedule:
+        quartz_cron_expression: 50 0 0 1 * ?
+        timezone_id: UTC
+        pause_status: PAUSED
+      max_concurrent_runs: 4
+      tasks:
+        - task_key: Build_from_HuggingFace
+          notebook_task:
+            notebook_path: ../src/build_from_hf.py
+            base_parameters:
+              root: /Volumes/datasets/default/byod/c4/
+              hf_name: tatsu-lab/alpaca
+              split: train
+              preprocessing_fn: llmfoundry.data.finetuning.tasks:alpaca_preprocessing_function
+              max_seq_len: 2048F
+              tokenizer: EleutherAI/gpt-neox-20b
+            source: WORKSPACE
+          existing_cluster_id: 1119-060516-zdtvb3k2
+      tags:
+        dev: Xiaohan Zhang
+

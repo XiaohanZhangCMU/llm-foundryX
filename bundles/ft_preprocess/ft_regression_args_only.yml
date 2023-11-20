@@ -1,0 +1,102 @@
+seed: 17
+model:
+  name: hf_causal_lm
+  pretrained: true
+  init_device: mixed
+  config_overrides:
+    attn_config:
+      attn_impl: triton
+      attn_uses_sequence_id: false
+  pretrained_model_name_or_path: mosaicml/mpt-7b
+loggers:
+  mlflow:
+    tracking_uri: databricks
+    model_registry_uri: databricks-uc
+    model_registry_prefix: main.regression
+callbacks:
+  lr_monitor: {}
+  scheduled_gc:
+    batch_interval: 1000
+  speed_monitor:
+    window_size: 10
+  memory_monitor: {}
+  hf_checkpointer:
+    precision: bfloat16
+    save_folder: s3://mosaicml-internal-integration-testing/finetune/ift-mpt-7b-regression-ckpts/checkpoints
+    save_interval: 1dur
+    mlflow_registered_model_name: ift-mpt-7b-or6nu0
+  generate_callback:
+    top_k: 50
+    top_p: 0.95
+    prompts:
+    - A quick brown fox jumped
+    - Who was the president of the US in 1776?
+    interval: 1000ba
+    do_sample: true
+    use_cache: true
+    temperature: 1
+    max_new_tokens: 100
+  runtime_estimator: {}
+optimizer:
+  lr: 5.0e-07
+  name: decoupled_lionw
+  betas:
+  - 0.9
+  - 0.95
+  weight_decay: 0
+precision: amp_bf16
+scheduler:
+  name: linear_decay_with_warmup
+  alpha_f: 0
+  t_warmup: 0.02dur
+tokenizer:
+  name: mosaicml/mpt-7b
+  kwargs:
+    model_max_length: 2048
+algorithms:
+  gradient_clipping:
+    clipping_type: norm
+    clipping_threshold: 1
+autoresume: true
+fsdp_config:
+  verbose: false
+  mixed_precision: PURE
+  limit_all_gathers: true
+  sharding_strategy: FULL_SHARD
+  activation_cpu_offload: false
+  activation_checkpointing: true
+  activation_checkpointing_reentrant: false
+global_seed: 17
+max_seq_len: 2048
+save_folder: s3://mosaicml-internal-integration-testing/finetune/ift-mpt-7b-regression-ckpts/checkpoints
+dist_timeout: 7200
+max_duration: 20ba
+progress_bar: false
+train_loader:
+  name: finetuning
+  dataset:
+    split: train
+    hf_name: mosaicml/dolly_hhrlhf
+    shuffle: true
+    max_seq_len: 2048
+    shuffle_algo: py1e
+    packing_ratio: 'auto'
+    shuffle_seed: 17
+    allow_pad_trimming: false
+    decoder_only_format: true
+  timeout: 0
+  drop_last: false
+  pin_memory: true
+  num_workers: 8
+  prefetch_factor: 2
+  persistent_workers: true
+eval_interval: 1
+save_interval: 1000ba
+log_to_console: true
+python_log_level: debug
+save_weights_only: false
+console_log_interval: 10ba
+device_eval_batch_size: 8
+global_train_batch_size: 96
+device_train_microbatch_size: auto
+save_num_checkpoints_to_keep: 1

@@ -3,5 +3,6 @@
 
 from llmfoundry.data.finetuning.collator import Seq2SeqFinetuningCollator
 from llmfoundry.data.finetuning.dataloader import build_finetuning_dataloader
+from llmfoundry.data.finetuning.tasks import DatasetConstructor
 
-__all__ = ['Seq2SeqFinetuningCollator', 'build_finetuning_dataloader']
+__all__ = ['Seq2SeqFinetuningCollator', 'build_finetuning_dataloader', 'DatasetConstructor']
