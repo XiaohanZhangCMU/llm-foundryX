@@ -1,0 +1,38 @@
+resources:
+  jobs:
+    dev_xiaohan_zhang_cpt_poc:
+      name: cpt_poc_1150
+      email_notifications:
+        on_start:
+          - xiaohan.zhang@databricks.com
+        on_success:
+          - xiaohan.zhang@databricks.com
+        on_failure:
+          - xiaohan.zhang@databricks.com
+        on_duration_warning_threshold_exceeded:
+          - xiaohan.zhang@databricks.com
+      timeout_seconds: 10800
+      health:
+        rules:
+          - metric: RUN_DURATION_SECONDS
+            op: GREATER_THAN
+            value: 7200
+      schedule:
+        quartz_cron_expression: 50 0 0 1 * ?
+        timezone_id: UTC
+        pause_status: PAUSED
+      max_concurrent_runs: 4
+      tasks:
+        - task_key: cpt_data_prep
+          notebook_task:
+            notebook_path: convert_text_to_mds.py
+            base_parameters:
+              input_folder: /Volumes/datasets/default/byod/cpt_poc/input/
+              output_folder: /Volumes/datasets/default/byod/cpt_poc/output/
+              tokenizer: EleutherAI/gpt-neox-20b
+              concat_tokens: 1024F
+            source: WORKSPACE
+          existing_cluster_id: 1119-060516-zdtvb3k2
+      tags:
+        dev: Xiaohan Zhang
+

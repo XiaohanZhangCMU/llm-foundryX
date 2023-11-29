@@ -1,0 +1,74 @@
+resources:
+  jobs:
+    dev_xiaohan_zhang_BYOD_POC_2010:
+      name: BYOD-POC_1350
+      email_notifications:
+        on_start:
+          - xiaohan.zhang@databricks.com
+        on_success:
+          - xiaohan.zhang@databricks.com
+        on_failure:
+          - xiaohan.zhang@databricks.com
+        on_duration_warning_threshold_exceeded:
+          - xiaohan.zhang@databricks.com
+      timeout_seconds: 10800
+      health:
+        rules:
+          - metric: RUN_DURATION_SECONDS
+            op: GREATER_THAN
+            value: 7200
+      schedule:
+        quartz_cron_expression: 50 0 0 1 * ?
+        timezone_id: UTC
+        pause_status: PAUSED
+      max_concurrent_runs: 4
+      tasks:
+        - task_key: Ingest_C4_from_HuggingFace
+          notebook_task:
+            notebook_path: ./c4_en/ingestion.py
+            base_parameters:
+              root: /Volumes/datasets/default/byod/c4/
+            source: WORKSPACE
+          existing_cluster_id: 1119-060516-zdtvb3k2
+          libraries:
+            - whl: dbfs:/xiaohan-test/mosaicml_byod-0.0.1-py3-none-any.whl
+        - task_key: C4_Filter_Tokenization_MDSWrite
+          depends_on:
+            - task_key: Ingest_C4_from_HuggingFace
+          notebook_task:
+            notebook_path: ./c4_en/processing.py
+            source: WORKSPACE
+          existing_cluster_id: 1119-060516-zdtvb3k2
+          libraries:
+            - whl: dbfs:/xiaohan-test/mosaicml_byod-0.0.1-py3-none-any.whl
+        - task_key: Ingest_GCS_Arxiv_Extract_PDF_Text
+          notebook_task:
+            notebook_path: ./arxiv/ingestion.py
+            base_parameters:
+              root: /Volumes/datasets/default/byod/arxiv/
+            source: WORKSPACE
+          existing_cluster_id: 1119-060516-zdtvb3k2
+          libraries:
+            - whl: dbfs:/xiaohan-test/mosaicml_byod-0.0.1-py3-none-any.whl
+        - task_key: Arxiv_Filter_Tokenization_MDSWrite
+          depends_on:
+            - task_key: Ingest_GCS_Arxiv_Extract_PDF_Text
+          notebook_task:
+            notebook_path: ./arxiv/processing.py
+            source: WORKSPACE
+          existing_cluster_id: 1119-060516-zdtvb3k2
+          libraries:
+            - whl: dbfs:/xiaohan-test/mosaicml_byod-0.0.1-py3-none-any.whl
+        - task_key: mds_shard_integrity_check
+          depends_on:
+            - task_key: Arxiv_Filter_Tokenization_MDSWrite
+            - task_key: C4_Filter_Tokenization_MDSWrite
+          notebook_task:
+            notebook_path: ./mds_shard_integrity_checks.py
+            source: WORKSPACE
+          existing_cluster_id: 1119-060516-zdtvb3k2
+          libraries:
+            - whl: dbfs:/xiaohan-test/mosaicml_byod-0.0.1-py3-none-any.whl
+      tags:
+        dev: Xiaohan Zhang
+
