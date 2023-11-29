@@ -14,7 +14,8 @@
 # COMMAND ----------
 
 #%pip install /dbfs/xiaohan-test/mosaicml_byod-0.0.1-py3-none-any.whl
-#dbutils.library.restartPython()
+%pip install git+https://github.com/XiaohanZhangCMU/llm-foundryX.git@cpt_poc
+dbutils.library.restartPython()
 
 # COMMAND ----------
 
@@ -487,3 +488,15 @@ convert_text_to_mds(tokenizer_name=args.tokenizer,
                     args_str=_args_str(args))
 
 
+from torch.utils.data import DataLoader
+from streaming import StreamingDataset
+import numpy as np
+
+total_tokens = 0
+dataset=StreamingDataset(local=args.output_folder)
+dataloader = DataLoader(dataset)
+sample = next(iter(dataloader))
+b = np.asarray(sample['tokens']).tobytes()
+token_ids = np.frombuffer(b, dtype=np.int64)
+n_token_per_sample = len(token_ids)
+print('total_tokens = ', n_token_per_sample * dataset.num_samples)
