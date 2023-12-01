@@ -6,6 +6,7 @@ bundle:
 include:
   - bundles/c4_arxiv/job.yml
   - bundles/ft_data_prep/job.yml
+  - bundles/test_run/job.yml
 
 targets:
   # The 'dev' target, used for development purposes.

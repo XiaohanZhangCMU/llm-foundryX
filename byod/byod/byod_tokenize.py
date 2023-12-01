@@ -8,6 +8,7 @@ import time
 from enum import Enum
 from typing import Any, Optional, Callable, TypeVar, Union, Tuple, Dict
 from copy import deepcopy
+from byod.utils import build_hf_dataset_wrapper, get_import_exception_message
 
 try:
     from pyspark.sql.dataframe import DataFrame
@@ -17,7 +18,6 @@ except ImportError as e:
 
 #from streaming.base.converters import dataframeToMDS
 from byod import MaterializeTask
-from byod.utils import build_hf_dataset_wrapper, get_import_exception_message
 
 import logging
 logger = logging.getLogger(__name__)

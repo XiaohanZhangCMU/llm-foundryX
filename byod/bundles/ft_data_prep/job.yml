@@ -30,7 +30,7 @@ resources:
               input_folder: /Volumes/datasets/default/byod/cpt_poc/input/
               output_folder: /Volumes/datasets/default/byod/cpt_poc/output/
               tokenizer: EleutherAI/gpt-neox-20b
-              concat_tokens: 1024F
+              concat_tokens: '1024'
             source: WORKSPACE
           existing_cluster_id: 1119-060516-zdtvb3k2
       tags:
