@@ -310,10 +310,11 @@ def fetch(
 
         # Running the query and collecting the data as arrow or json.
         query = df._plan.to_proto(df._session.client)  # pyright: ignore
-        schema, cloudfetch_results = df._session.client.experimental_to_cloudfetch(
-            query, 'arrow', compression=False
+        schema, signed = df._session.client.experimental_to_cloudfetch(
+            query,
+            'arrow',
+            compression=False,
         )  # pyright: ignore
-        signed = [result.url for result in cloudfetch_results]
         log.info(f'len(signed) = {len(signed)}')
 
         args = get_args(signed, json_output_folder, columns)
