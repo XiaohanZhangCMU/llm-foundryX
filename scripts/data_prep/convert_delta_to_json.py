@@ -11,7 +11,6 @@ from concurrent.futures import ProcessPoolExecutor
 from typing import Iterable, List, Optional, Tuple, Union
 from uuid import uuid4
 
-import google.protobuf.any_pb2 as any_pb2
 import lz4.frame
 import pandas as pd
 import pyarrow as pa
@@ -24,7 +23,6 @@ from databricks.sql.client import Connection as Connection
 from databricks.sql.client import Cursor as Cursor
 from packaging import version
 from pyspark.sql import SparkSession
-from pyspark.sql.connect.client.core import SparkConnectClient
 from pyspark.sql.connect.dataframe import DataFrame
 from pyspark.sql.dataframe import DataFrame as SparkDataFrame
 from pyspark.sql.types import Row
@@ -310,7 +308,7 @@ def fetch(
 
         # Running the query and collecting the data as arrow or json.
         query = df._plan.to_proto(df._session.client)  # pyright: ignore
-        schema, signed = df._session.client.experimental_to_cloudfetch(
+        _, signed = df._session.client.experimental_to_cloudfetch(
             query,
             'arrow',
             compression=False,
